@@ -1,0 +1,8 @@
+    /**
+     * @param $%2$s
+     * @return $this
+     */
+    public function set%1$s($%2$s) {
+        $this->%2$s = $%2$s;
+        return $this;
+    }

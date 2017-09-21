@@ -1,0 +1,4 @@
+    /**
+     * @Column(name=%1$s) %2$s
+     */
+    protected $%3$s;

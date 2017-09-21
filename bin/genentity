@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+$file = __DIR__ . '/../../../autoload.php';
+if (!file_exists($file)) {
+    $file = __DIR__ . '/../vendor/autoload.php';
+}
+//realpath(dirname($string) . '/../')
+define("PROJECT_PATH", realpath(dirname($file) . '/../' ));
+
+require_once $file;
+
+use Hexagone\Commands\GenerateEntities;
+use Symfony\Component\Console\Application;
+
+$command = new GenerateEntities();
+$application = new Application();
+$application->add($command);
+$application->setDefaultCommand($command->getName());
+$application->run();

@@ -1,0 +1,7 @@
+    /**
+     * @return mixed
+     */
+    public function get%1$s()
+    {
+        return $this->%2$s;
+    }
