@@ -69,6 +69,7 @@ class HexagoneEntity
     public function __construct()
     {
         $this->entityReflection();
+        $this->setLastState();
     }
 
     /**
