@@ -8,11 +8,13 @@
     },
     "exclude-from-classmap": ["/tests/"]
   },
-  "require": {
+  "require-dev": {
     "symfony/console":"*"
   },
   "config": {
     "discard-changes": true
   },
-  "bin": ["bin/genentity"]
+  "bin": [
+    "bin/genentity"
+  ]
 }
