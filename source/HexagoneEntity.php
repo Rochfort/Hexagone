@@ -142,7 +142,7 @@ class HexagoneEntity
     /**
      * Получить объект св-ва от рефлексии
      *
-     * @param $name
+     * @param string $name
      * @return \ReflectionProperty
      */
     private function getProperty($name)
@@ -157,8 +157,8 @@ class HexagoneEntity
     /**
      * Нужно для установки св-ва если св-во класса отличается от названия поля в бд
      *
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param string $value
      */
     public function __set($name, $value)
     {
@@ -167,5 +167,22 @@ class HexagoneEntity
             $property = $this->getProperty($this->properties[$key]);
             $property->setValue($this, $value);
         }
+    }
+
+    /**
+     * Изменить название таблицы
+     *
+     * @param string $tblName
+     * @return $this
+     */
+    public function setTable($tblName)
+    {
+        if (is_string($tblName)) {
+            $this->table = $tblName;
+        } else {
+            $this->findTableName();
+        }
+
+        return $this;
     }
 }
