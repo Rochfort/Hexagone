@@ -11,9 +11,13 @@ namespace Entities;
 use Hexagone\HexagoneEntity;
 
 /**
- * Class TestBadEntity
+ * Class TestBadEntity3
  *
  * @package Entities
- * @table(name=bad_table)
  */
-class TestBadEntity extends HexagoneEntity {}
+class TestBadEntity3 extends HexagoneEntity {
+    /**
+     * @Column @pk
+     */
+    protected $id;
+}

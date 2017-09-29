@@ -23,15 +23,26 @@ trait QueryHistory
      * @var array
      */
     private $history = [];
+    /**
+     * Log state (keep log or no)
+     *
+     * @var bool
+     */
+    private $stateLog = false;
 
     /**
      * Add data in log
      *
      * @param        $str
      * @param string $values
+     * @return bool
      */
     protected function addQuery($str, $values = '')
     {
+        if (!$this->stateLog) {
+            return false;
+        }
+
         $milliseconds = round(microtime(true) * 1000);
         $log = [
             'time' => $milliseconds,
@@ -39,7 +50,9 @@ trait QueryHistory
             'values'=>$values,
         ];
 
-         $this->history[] = $log;
+        $this->history[] = $log;
+
+        return true;
     }
 
     /**
@@ -47,6 +60,19 @@ trait QueryHistory
      */
     protected function clearLog() {
         $this->history = [];
+    }
+
+    /**
+     * Изменить состояние лога
+     *
+     * @param $state
+     * @return $this
+     */
+    public function setLogState($state)
+    {
+        $this->stateLog = (bool)$state;
+
+        return $this;
     }
 
     /**

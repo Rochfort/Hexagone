@@ -4,6 +4,7 @@ namespace Components;
 
 use Entities\TestBadEntity;
 use Entities\TestBadEntity2;
+use Entities\TestBadEntity3;
 use Entities\TestGoodEntity;
 use const Hexagone\Components\LPRIORITY;
 use MokObjects\MockPDO;
@@ -18,6 +19,8 @@ class InsertTest extends \PHPUnit_Framework_TestCase
     public function testGoodEntity() {
         $ent = new TestGoodEntity();
         $pdoMock = new MockPDO();
+
+        $ent->setLogState(true);
 
         // simple save
         $ent->setSecondName('awdawd')->setAddr('street')->setName('aqweqwe');
@@ -74,11 +77,10 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 
     public function testBadEntityExceptionTblName()
     {
-        $ent = new TestBadEntity();
+        $ent = new TestBadEntity3();
         $pdoMock = new MockPDO();
 
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Undefined tbl_name for save');
 
         // simple save
         $ent->save($pdoMock);
@@ -86,11 +88,10 @@ class InsertTest extends \PHPUnit_Framework_TestCase
 
     public function testBadEntityExceptionColumn()
     {
+        $this->expectException(\Exception::class);
+
         $ent = new TestBadEntity2();
         $pdoMock = new MockPDO();
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Undefined column values');
 
         // simple save
         $ent->save($pdoMock);

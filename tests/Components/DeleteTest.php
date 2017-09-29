@@ -19,7 +19,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $ent = new TestGoodEntity();
         $pdoMock = new MockPDO();
 
-        $ent->setId(12)->delete($pdoMock);
+        $ent->setLogState(true)->setId(12)->delete($pdoMock);
 
         $actual = $ent->getLog();
         foreach ($actual as $key => $item) {
@@ -28,7 +28,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
 
         $expected = [
             [
-                'query' => "DELETE FROM crazy_table WHERE WHERE `id`='12'",
+                'query' => "DELETE FROM `crazy_table` WHERE `id`='12'",
                 'values' => ''
             ],
         ];

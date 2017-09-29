@@ -11,9 +11,9 @@ namespace Entities;
 use Hexagone\HexagoneEntity;
 
 /**
- * Class TestBadEntity
+ * Class TestBadEntity2
  *
  * @package Entities
- * @table(name=bad_table)
+ * @Table(name=bad_table)
  */
-class TestBadEntity extends HexagoneEntity {}
+class TestBadEntity2 extends HexagoneEntity {}

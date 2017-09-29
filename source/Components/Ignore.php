@@ -43,6 +43,9 @@ trait Ignore
      */
     public function setPriority(int $level)
     {
+        if (!isset($this->priorityStack[$level])) {
+            $level = 0;
+        }
         $this->priority = $this->priorityStack[$level];
         return $this;
     }

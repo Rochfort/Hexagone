@@ -20,8 +20,8 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
         $ent = new TestGoodEntity();
         $pdoMock = new MockPDO();
 
+        $ent->setLogState(true);
         $ent->setSecondName('awdawd')->setAddr('street')->setName('aqweqwe')->update($pdoMock);
-
         $ent->setOnlyNewValues()->setSecondName('iosduerjfiusejf')->update($pdoMock);
 
         try {
@@ -41,7 +41,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 
         $expected = [
             [
-                'query' => "UPDATE   `crazy_table` SET `id`='',`fio`='aqweqwe',`fio2`='awdawd'," .
+                'query' => "UPDATE   `crazy_table` SET `id`= Null,`fio`='aqweqwe',`fio2`='awdawd'," .
                     "`addr`='street' WHERE `id` is null  ",
                 'values' => ''
             ],
@@ -50,12 +50,12 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
                 'values' => ''
             ],
             [
-                'query' => "UPDATE   `crazy_table` SET `id`='',`fio`='aqweqwe'," .
+                'query' => "UPDATE   `crazy_table` SET `id`= Null,`fio`='aqweqwe'," .
                     "`fio2`='iosduerjfiusejf',`addr`='street' WHERE `id` is null ORDER BY aaa desc ",
                 'values' => ''
             ],
             [
-                'query' => "UPDATE  IGNORE `crazy_table` SET `id`='',`fio`='aqweqwe'," .
+                'query' => "UPDATE  IGNORE `crazy_table` SET `id`= Null,`fio`='aqweqwe'," .
                     "`fio2`='iosduerjfiusejf',`addr`='street' WHERE `id` is null ORDER BY aaa desc,bbb  LIMIT 12",
                 'values' => ''
             ]
@@ -71,7 +71,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
         $pdoMock = new MockPDO();
 
         // simple save
-        $ent->setSecondName('awdawd')->setAddr('street')->setName('aqweqwe');
+        $ent->setSecondName('awdawd')->setAddr('street')->setName('aqweqwe')->setLogState(true);
         $ent->update($pdoMock);
 
         $ent->setOnlyNewValues()->setSecondName('iosduerjfiusejf')->update($pdoMock);
@@ -92,7 +92,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
 
         $expected = [
             [
-                'query' => "UPDATE   `crazy_table` SET `id`='',`fio`='aqweqwe',`fio2`='awdawd'," .
+                'query' => "UPDATE   `crazy_table` SET `id`= Null,`fio`='aqweqwe',`fio2`='awdawd'," .
                     "`addr`='street' WHERE `id` is null AND `fio`='aqweqwe'  ",
                 'values' => ''
             ],
@@ -102,7 +102,7 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
                 'values' => ''
             ],
             [
-                'query' => "UPDATE   `crazy_table` SET `id`='',`fio`='aqweqwe',`fio2`='iosduerjfiusejf'," .
+                'query' => "UPDATE   `crazy_table` SET `id`= Null,`fio`='aqweqwe',`fio2`='iosduerjfiusejf'," .
                     "`addr`='street' WHERE `id` is null AND `fio`='aqweqwe' ORDER BY aaa desc ",
                 'values' => ''
             ]
