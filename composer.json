@@ -8,7 +8,7 @@
     },
     "exclude-from-classmap": ["/tests/"]
   },
-  "require-dev": {
+  "require": {
     "symfony/console":"*"
   },
   "config": {
