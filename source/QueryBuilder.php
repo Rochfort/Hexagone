@@ -128,24 +128,9 @@ class QueryBuilder
      * @param \PDO           $pdo
      * @return HexagoneEntity[]
      */
-    public function getObject(HexagoneEntity $object, \PDO $pdo)
+    public function getObject(HexagoneEntity $object, \PDO $pdo = null)
     {
-        if (null == $pdo) {
-            $pdo = ConnectionManager::getDbh();
-        }
-        
-        $where = '';
-        if (!empty($this->where)) {
-            $where = " WHERE " . $this->where;
-        }
-
-        $limit = '';
-        if (!empty($this->limit)) {
-            $limit = " " . $this->where;
-        }
-
-        $sql = "Select " . $this->fields . $where . $limit;
-        $stmt = $pdo->prepare($sql);
+        $stmt = $this->getStmt($pdo);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, $object);
         return $stmt->fetchAll();
     }
@@ -154,7 +139,17 @@ class QueryBuilder
      * @param \PDO $pdo
      * @return array
      */
-    public function get(\PDO $pdo)
+    public function get(\PDO $pdo = null)
+    {
+        $stmt = $this->getStmt($pdo);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * @param \PDO $pdo
+     * @return \PDOStatement
+     */
+    protected function getStmt(\PDO $pdo): \PDOStatement
     {
         if (null == $pdo) {
             $pdo = ConnectionManager::getDbh();
@@ -170,9 +165,9 @@ class QueryBuilder
             $limit = " " . $this->where;
         }
 
-
-        $sql = "Select " . $this->fields . $where . $limit;
+        $sql  = "Select " . $this->fields . $where . $limit;
         $stmt = $pdo->prepare($sql);
-        return $stmt->fetchAll();
+
+        return $stmt;
     }
 }
