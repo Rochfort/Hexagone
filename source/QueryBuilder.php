@@ -11,8 +11,10 @@ namespace Hexagone;
 class QueryBuilder
 {
     protected $fields = '*';
-    protected $where = '';
-    protected $limit = '';
+    protected $where  = '';
+    protected $limit  = '';
+    protected $table  = '';
+    protected $sql    = '';
 
     /**
      * Задать получаемые поля
@@ -42,6 +44,19 @@ class QueryBuilder
         $this->fields = $fields_str;
 
         return $this;
+    }
+
+    /**
+     * @param string $table
+     * @throws \Exception
+     */
+    public function table(string $table)
+    {
+        if (empty($table)) {
+            $message = 'Table name cant be empty';
+            throw new \Exception($message);
+        }
+        $this->table = $table;
     }
 
     /**
@@ -149,7 +164,7 @@ class QueryBuilder
      * @param \PDO $pdo
      * @return \PDOStatement
      */
-    protected function getStmt(\PDO $pdo): \PDOStatement
+    protected function getStmt(\PDO $pdo = null): \PDOStatement
     {
         if (null == $pdo) {
             $pdo = ConnectionManager::getDbh();
@@ -165,9 +180,17 @@ class QueryBuilder
             $limit = " " . $this->where;
         }
 
-        $sql  = "Select " . $this->fields . $where . $limit;
-        $stmt = $pdo->prepare($sql);
+        $this->sql  = "Select " . $this->fields . $where . $limit;
+        $stmt = $pdo->prepare($this->sql);
 
         return $stmt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSql(): string
+    {
+        return $this->sql;
     }
 }
