@@ -1,0 +1,178 @@
+<?php
+
+namespace Hexagone;
+
+/**
+ * Created by PhpStorm.
+ * User: rochfort
+ * Date: 03.10.17
+ * Time: 14:47
+ */
+class QueryBuilder
+{
+    protected $fields = '*';
+    protected $where = '';
+    protected $limit = '';
+
+    /**
+     * Задать получаемые поля
+     *
+     * @param array|string $fields
+     * @return QueryBuilder
+     */
+    public function select($fields)
+    {
+        // Если строка пустая или *
+        if (is_string($fields) && ($fields == '*' || empty($field))) {
+            return $this;
+        }
+
+        // Экранируем поля, если нужно
+        if (is_string($fields)) {
+            $fields = explode(',', $fields);
+        }
+
+        $callback = function($value) {
+            return sprintf('`%s`', $value);
+        };
+
+        $fields = array_map($callback, $fields);
+        $fields_str = implode(',', $fields);
+
+        $this->fields = $fields_str;
+
+        return $this;
+    }
+
+    /**
+     * Задать условие where
+     * В зависимости от типов значений каждого параметра получится разный результат
+     * Возможные комбинации типов параметров:
+     *  - string, string, string    (a = b)
+     *  - array, array, string      (a = b and c = d)
+     *  - array, array, array       (a = b and c > d)
+     *  - array, string, string     (a = b and c = d)
+     *
+     * @param array|string $keys       - ключи посика
+     * @param array|string $value      - значения поиска
+     * @param array|string $comparison - тип сравнения
+     * @return QueryBuilder
+     * @throws \Exception
+     */
+    public function where($keys, $value = '', $comparison = '=')
+    {
+        if (is_string($keys) && is_string($value) && is_string($comparison)) {
+            // одно условие, одно сравнение, все просто
+            $format = "`%s` %s '%s'";
+            $this->where = sprintf($format, $keys, $comparison, $value);
+        } else if (is_array($keys) && is_array($value)) {
+            // Набор условий где значения одного массива колонки таблицы,
+            // а значения другого массива - значения полей
+            $where = [];
+            $format = "`%s` %s '%s'";
+
+            if (is_string($comparison)) {
+                // Если сравнение строка - значит один тип сравнения на все условия
+                foreach ($keys as $key => $val) {
+                    $where[] = sprintf($format, $key, $comparison, $value[$key]);
+                }
+            } else {
+                // Если сравнение массив, значит каждому условию свой тип сравнения
+                foreach ($keys as $key => $val) {
+                    $where[] = sprintf($format, $key, $comparison[$key], $value[$key]);
+                }
+            }
+            $this->where = implode(' AND ', $where);
+
+        } else if (is_array($keys) && empty($value)) {
+            // Набор условий в одном массиве, где ключ массива - название колонки в таблице,
+            // а значение массива - значение условия фильтрации
+            // На все условия одно сравнение
+            $where = [];
+            $format = "`%s` %s '%s'";
+            foreach ($keys as $key => $val) {
+                $where[] = sprintf($format, $key, $comparison, $val);
+            }
+            $this->where = implode(' AND ', $where);
+        } else {
+            $message = 'key and value count must be equivalent';
+            throw new \Exception($message);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     * @return $this
+     * @throws \Exception
+     */
+    public function limit($limit, $offset = 0)
+    {
+        if ($limit < 0 || $offset < 0) {
+            $message = 'limit and offset cant be smaller 0';
+            throw new \Exception($message);
+        }
+
+        $format = "limit %d, %d";
+        $this->limit = sprintf($format, $offset, $limit);
+
+        return $this;
+    }
+
+    /**
+     * Получить из запроса объект типа HexagoneEntity
+     * 
+     * @param HexagoneEntity $object
+     * @param \PDO           $pdo
+     * @return HexagoneEntity[]
+     */
+    public function getObject(HexagoneEntity $object, \PDO $pdo)
+    {
+        if (null == $pdo) {
+            $pdo = ConnectionManager::getDbh();
+        }
+        
+        $where = '';
+        if (!empty($this->where)) {
+            $where = " WHERE " . $this->where;
+        }
+
+        $limit = '';
+        if (!empty($this->limit)) {
+            $limit = " " . $this->where;
+        }
+
+        $sql = "Select " . $this->fields . $where . $limit;
+        $stmt = $pdo->prepare($sql);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, $object);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * @param \PDO $pdo
+     * @return array
+     */
+    public function get(\PDO $pdo)
+    {
+        if (null == $pdo) {
+            $pdo = ConnectionManager::getDbh();
+        }
+
+        $where = '';
+        if (!empty($this->where)) {
+            $where = " WHERE " . $this->where;
+        }
+
+        $limit = '';
+        if (!empty($this->limit)) {
+            $limit = " " . $this->where;
+        }
+
+
+        $sql = "Select " . $this->fields . $where . $limit;
+        $stmt = $pdo->prepare($sql);
+        return $stmt->fetchAll();
+    }
+}
