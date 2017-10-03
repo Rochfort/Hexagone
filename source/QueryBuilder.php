@@ -25,7 +25,7 @@ class QueryBuilder
     public function select($fields)
     {
         // Если строка пустая или *
-        if (is_string($fields) && ($fields == '*' || empty($field))) {
+        if (is_string($fields) && ($fields == '*' || empty($fields))) {
             return $this;
         }
 
@@ -48,6 +48,7 @@ class QueryBuilder
 
     /**
      * @param string $table
+     * @return $this
      * @throws \Exception
      */
     public function table(string $table)
@@ -57,6 +58,8 @@ class QueryBuilder
             throw new \Exception($message);
         }
         $this->table = $table;
+
+        return $this;
     }
 
     /**
@@ -89,12 +92,12 @@ class QueryBuilder
             if (is_string($comparison)) {
                 // Если сравнение строка - значит один тип сравнения на все условия
                 foreach ($keys as $key => $val) {
-                    $where[] = sprintf($format, $key, $comparison, $value[$key]);
+                    $where[] = sprintf($format, $val, $comparison, $value[$key]);
                 }
             } else {
                 // Если сравнение массив, значит каждому условию свой тип сравнения
                 foreach ($keys as $key => $val) {
-                    $where[] = sprintf($format, $key, $comparison[$key], $value[$key]);
+                    $where[] = sprintf($format, $val, $comparison[$key], $value[$key]);
                 }
             }
             $this->where = implode(' AND ', $where);
@@ -161,8 +164,9 @@ class QueryBuilder
     }
 
     /**
-     * @param \PDO $pdo
+     * @param \PDO|null $pdo
      * @return \PDOStatement
+     * @throws \Exception
      */
     protected function getStmt(\PDO $pdo = null): \PDOStatement
     {
@@ -180,7 +184,12 @@ class QueryBuilder
             $limit = " " . $this->where;
         }
 
-        $this->sql  = "Select " . $this->fields . $where . $limit;
+        if (empty($this->table)) {
+            $message = 'Table name cant be empty';
+            throw new \Exception($message);
+        }
+
+        $this->sql  = "SELECT " . $this->fields . " FROM " . $this->table . $where . $limit;
         $stmt = $pdo->prepare($this->sql);
 
         return $stmt;
