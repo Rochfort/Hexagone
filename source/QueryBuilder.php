@@ -128,7 +128,7 @@ class QueryBuilder
      * @param \PDO           $pdo
      * @return HexagoneEntity[]
      */
-    public function getObject(HexagoneEntity $object, \PDO $pdo = null)
+    public function getObject($object, \PDO $pdo = null)
     {
         $stmt = $this->getStmt($pdo);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, $object);
