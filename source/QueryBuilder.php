@@ -150,6 +150,7 @@ class QueryBuilder
     {
         $stmt = $this->getStmt($pdo);
         $stmt->setFetchMode(\PDO::FETCH_CLASS|\PDO::FETCH_PROPS_LATE, $object);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 
@@ -160,6 +161,7 @@ class QueryBuilder
     public function get(\PDO $pdo = null)
     {
         $stmt = $this->getStmt($pdo);
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 

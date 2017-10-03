@@ -1,7 +1,7 @@
 {
   "name": "rochfort/hexagone",
   "description": "This is a simple ORM by Reflection",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "autoload": {
     "psr-4" : {
       "Hexagone\\" : "source/"
