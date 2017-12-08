@@ -4,6 +4,7 @@ namespace Hexagone;
 
 
 use Hexagone\Components\AsStructs;
+use Hexagone\Components\Debug;
 use Hexagone\Components\Delete;
 use Hexagone\Components\Limit;
 use Hexagone\Components\Order;
@@ -29,6 +30,7 @@ class HexagoneEntity
     use Common, Ignore, Where;
     use Insert, Update, Delete;
     use Order, Limit;
+    use Debug;
 
     /**
      * @var \ReflectionClass $selfReflectionClass
