@@ -142,8 +142,8 @@ class QueryBuilder
     /**
      * Получить из запроса объект типа HexagoneEntity
      * 
-     * @param HexagoneEntity $object
-     * @param \PDO           $pdo
+     * @param      $object
+     * @param \PDO $pdo
      * @return HexagoneEntity[]
      */
     public function getObject($object, \PDO $pdo = null)
