@@ -14,7 +14,7 @@ trait Order
     /**
      * @var bool|\stdClass
      */
-    private $order = false;
+    private $orderParams = false;
     /**
      * @var string
      */
@@ -25,9 +25,9 @@ trait Order
      */
     protected function getStringOrder() {
         $string = '';
-        if (false !== $this->order) {
+        if (false !== $this->orderParams) {
             $order = [];
-            foreach ($this->order as $name => $orderDirect) {
+            foreach ($this->orderParams as $name => $orderDirect) {
                 $order[] = $name . " " . $orderDirect;
             }
 
@@ -46,14 +46,14 @@ trait Order
     public function setOrder($order = false)
     {
         if (!is_array($order) || !is_object($order)) {
-            $this->order = false;
+            $this->orderParams = false;
         }
 
         if (is_array($order)) {
             $order = (object)$order;
         }
 
-        $this->order = $order;
+        $this->orderParams = $order;
 
         return $this;
     }
